@@ -1,6 +1,9 @@
 class Club < ApplicationRecord
+  include HasCustomQuestions
+
   has_many :issues, dependent: :destroy
   has_many :members, dependent: :destroy
+  has_many :questions, dependent: :destroy
 
   THEMES = %w[base cute retro dark].freeze
 
@@ -19,6 +22,10 @@ class Club < ApplicationRecord
   after_update :handle_active_change, if: :saved_change_to_active?
   after_update :recalculate_issue_dates, if: -> { saved_change_to_delivery_frequency? || saved_change_to_delivery_time? || saved_change_to_delivery_day? || saved_change_to_timezone? }
   accepts_nested_attributes_for :members, allow_destroy: true, reject_if: :all_blank
+
+  attr_accessor :custom_questions
+
+  after_save :process_custom_questions, if: :custom_questions_changed?
 
   def self.delivery_frequencies
     { daily: 1, weekly: 7, biweekly: 14, monthly: 28, quarterly: 90, yearly: 365 }
@@ -170,6 +177,14 @@ class Club < ApplicationRecord
     members.select { |m| member.can_see?(m) }
   end
 
+  def question_pool
+    return Question.where(club_id: nil) unless use_custom_questions
+    
+    custom_questions_only ? 
+      questions : 
+      Question.where(club_id: [nil, id])
+  end
+
   private
 
   def set_defaults
@@ -258,5 +273,24 @@ class Club < ApplicationRecord
     else
       issues.not_sent.destroy_all
     end
+  end
+
+  def process_custom_questions
+    return if custom_questions.blank?
+    
+    custom_questions.split("\n")
+      .map(&:strip)
+      .reject(&:blank?)
+      .each do |prompt|
+        questions.create!(
+          prompt: prompt,
+          category: 'custom',
+          asked_by: title
+        )
+    end
+  end
+
+  def custom_questions_changed?
+    custom_questions.present?
   end
 end

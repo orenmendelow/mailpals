@@ -70,9 +70,11 @@ class Issue < ApplicationRecord
 
   def generate_questions(count = club.default_number_questions)
     return unless sections.include?("questions")
-
-    questions = Question.order("RANDOM()").limit(count)
-    issue_questions.create!(questions.map { |q| q.attributes.slice("prompt", "category", "asked_by") })
+    
+    questions = club.question_pool.order("RANDOM()").limit(count)
+    issue_questions.create!(
+      questions.map { |q| q.attributes.slice("prompt", "category", "asked_by") }
+    )
   end
 
   def in_progress?

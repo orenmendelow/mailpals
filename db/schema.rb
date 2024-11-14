@@ -63,6 +63,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_16_202640) do
     t.datetime "updated_at", null: false
     t.string "timezone"
     t.string "theme", default: "base"
+    t.boolean "use_custom_questions", default: false
+    t.boolean "custom_questions_only", default: false
   end
 
   create_table "comments", force: :cascade do |t|

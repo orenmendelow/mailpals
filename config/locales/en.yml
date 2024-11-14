@@ -58,6 +58,12 @@ en:
       active:
         title: "Active"
         description: "Pausing your MailPals will delete all existing issues and prevent new ones from being generated."
+      use_custom_questions:
+        title: "Use Custom Questions"
+        description: "Enable a custom question bank for your club"
+      custom_questions_only:
+        title: "Use Only Custom Questions"
+        description: "Only use questions from your custom question bank"
     sections:
       questions:
         title: "🤔 Questions"

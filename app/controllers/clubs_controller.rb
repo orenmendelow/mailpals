@@ -111,6 +111,18 @@ class ClubsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_params
-      params.require(:club).permit(:title, :description, :active, :default_number_questions, :delivery_time, :delivery_frequency, :delivery_day, :timezone, :theme, sections: [])
+      params.require(:club).permit(
+        :title,
+        :theme,
+        :default_number_questions,
+        :delivery_frequency,
+        :delivery_time,
+        :delivery_day,
+        :timezone,
+        :use_custom_questions,
+        :custom_questions_only,
+        :custom_questions,
+        sections: []
+      )
     end
 end

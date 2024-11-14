@@ -34,6 +34,29 @@
     </div>
   <% end %>
 
+  <div data-controller="custom-questions">
+    <div class="form-group">
+      <%= form.check_box :use_custom_questions, 
+          data: { action: "change->custom-questions#toggleVisibility" } %>
+      <%= form.label :use_custom_questions %>
+    </div>
+
+    <div data-custom-questions-target="options" class="hidden">
+      <div class="form-group mt-4">
+        <%= form.check_box :custom_questions_only %>
+        <%= form.label :custom_questions_only %>
+      </div>
+
+      <div class="mt-4">
+        <label class="block font-medium">Add Custom Questions</label>
+        <p class="text-sm text-gray-600 mb-2">Enter one question per line</p>
+        <%= form.text_area :custom_questions, 
+            rows: 10, 
+            class: "w-full border rounded p-2",
+            placeholder: "What's your biggest work achievement this quarter?\nWhat challenges are you currently facing in your role?" %>
+      </div>
+    </div>
+  </div>
 
   <div class="mt-6 flex justify-between">
     <% if club.persisted? %>
